@@ -35,7 +35,7 @@ export default function Profile() {
   const { user, userProfile } = useAuth();
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
-  const [editedName, setEditedName] = useState(userProfile?.displayName || '');
+  const [editedName, setEditedName] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSaveProfile = async () => {
