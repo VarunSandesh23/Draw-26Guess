@@ -150,33 +150,61 @@ export const logout = async () => {
 };
 
 // User profile functions
-export const createUserProfile = async (user: User, customDisplayName?: string) => {
-  const userRef = doc(db, 'users', user.uid);
-  const userDoc = await getDoc(userRef);
+export const createUserProfile = async (user: any, customDisplayName?: string) => {
+  // Skip for mock users (they start with 'mock_')
+  if (user.uid.startsWith('mock_')) {
+    return;
+  }
 
-  if (!userDoc.exists()) {
-    const userProfile: UserProfile = {
-      uid: user.uid,
-      email: user.email || '',
-      displayName: customDisplayName || user.displayName || 'Anonymous Player',
-      photoURL: user.photoURL || undefined,
-      totalScore: 0,
-      gamesPlayed: 0,
-      gamesWon: 0,
-      createdAt: new Date()
-    };
+  try {
+    const userRef = doc(db, 'users', user.uid);
+    const userDoc = await getDoc(userRef);
 
-    await setDoc(userRef, userProfile);
+    if (!userDoc.exists()) {
+      const userProfile: UserProfile = {
+        uid: user.uid,
+        email: user.email || '',
+        displayName: customDisplayName || user.displayName || 'Anonymous Player',
+        photoURL: user.photoURL || undefined,
+        totalScore: 0,
+        gamesPlayed: 0,
+        gamesWon: 0,
+        createdAt: new Date()
+      };
+
+      await setDoc(userRef, userProfile);
+    }
+  } catch (error) {
+    console.warn('Firestore not available, using mock profile');
   }
 };
 
 export const getUserProfile = async (uid: string): Promise<UserProfile | null> => {
+  // For mock users, get from localStorage
+  if (uid.startsWith('mock_')) {
+    const stored = localStorage.getItem('draw_and_guess_demo_user');
+    if (stored) {
+      const userData = JSON.parse(stored);
+      return {
+        uid: userData.uid,
+        email: userData.email,
+        displayName: userData.displayName,
+        photoURL: userData.photoURL,
+        totalScore: userData.totalScore || 0,
+        gamesPlayed: userData.gamesPlayed || 0,
+        gamesWon: userData.gamesWon || 0,
+        createdAt: new Date()
+      };
+    }
+    return null;
+  }
+
   try {
     const userRef = doc(db, 'users', uid);
     const userDoc = await getDoc(userRef);
     return userDoc.exists() ? userDoc.data() as UserProfile : null;
   } catch (error) {
-    console.error('Error getting user profile:', error);
+    console.warn('Firestore not available');
     return null;
   }
 };
