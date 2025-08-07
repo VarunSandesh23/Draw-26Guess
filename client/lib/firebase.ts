@@ -96,16 +96,31 @@ export const logout = async () => {
 };
 
 // User profile functions
-export const createUserProfile = async (user: any, customDisplayName?: string) => {
-  // Profile is already created in the sign up process for mock system
-  return;
+export const createUserProfile = async (user: User, customDisplayName?: string) => {
+  const userRef = doc(db, 'users', user.uid);
+  const userDoc = await getDoc(userRef);
+
+  if (!userDoc.exists()) {
+    const userProfile: UserProfile = {
+      uid: user.uid,
+      email: user.email || '',
+      displayName: customDisplayName || user.displayName || 'Anonymous Player',
+      photoURL: user.photoURL || undefined,
+      totalScore: 0,
+      gamesPlayed: 0,
+      gamesWon: 0,
+      createdAt: new Date()
+    };
+
+    await setDoc(userRef, userProfile);
+  }
 };
 
 export const getUserProfile = async (uid: string): Promise<UserProfile | null> => {
   try {
-    const users = getMockUsers();
-    const userEntry = users[uid];
-    return userEntry ? userEntry.profile : null;
+    const userRef = doc(db, 'users', uid);
+    const userDoc = await getDoc(userRef);
+    return userDoc.exists() ? userDoc.data() as UserProfile : null;
   } catch (error) {
     console.error('Error getting user profile:', error);
     return null;
