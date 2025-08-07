@@ -51,8 +51,6 @@ export interface Player {
   isReady: boolean;
 }
 
-const googleProvider = new GoogleAuthProvider();
-
 // Auth functions
 export const signInWithGoogle = async () => {
   try {
