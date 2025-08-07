@@ -294,8 +294,10 @@ export const updateUserProfile = async (uid: string, updates: Partial<UserProfil
           detail: updatedData
         }));
 
+        console.log('Mock user profile updated successfully');
         return true;
       }
+      console.log('No stored user found');
       return false;
     } catch (error) {
       console.error("Error updating mock user profile:", error);
