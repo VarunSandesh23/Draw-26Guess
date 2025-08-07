@@ -383,17 +383,41 @@ export default function Profile() {
                 <CardDescription>Unlock achievements by playing and winning games</CardDescription>
               </CardHeader>
               <CardContent>
-                {/* Achievement Design Reference */}
-                <div className="mb-6 p-4 bg-muted/20 rounded-lg border border-dashed border-muted">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-2 h-2 bg-game-purple rounded-full"></div>
-                    <span className="text-sm text-muted-foreground">Achievement Design Reference</span>
+                {/* Achievement Design Reference & Progress */}
+                <div className="mb-6 p-6 bg-gradient-to-r from-game-purple/5 to-game-teal/5 rounded-2xl border border-game-purple/20">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 bg-gradient-to-r from-game-purple to-game-teal rounded-full"></div>
+                      <span className="font-medium text-foreground">Achievement Gallery</span>
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      Progress: {unlockedAchievements.length}/{achievements.length}
+                    </div>
                   </div>
-                  <img
-                    src="https://cdn.builder.io/api/v1/image/assets%2Fd926398ea245443c9b9cde312e68afa5%2Fdce4c8e486e7490eba27a9be1ec43b99?format=webp&width=800"
-                    alt="Achievement Cards Design"
-                    className="w-full max-w-md mx-auto rounded-lg shadow-sm"
-                  />
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                    <div>
+                      <h4 className="font-semibold mb-2">Design Inspiration</h4>
+                      <p className="text-sm text-muted-foreground mb-3">
+                        Clean, modern achievement cards with clear visual hierarchy and engaging unlock states.
+                      </p>
+                      <div className="flex gap-2">
+                        <div className="w-4 h-4 bg-game-success rounded-full"></div>
+                        <span className="text-xs text-muted-foreground">Unlocked</span>
+                        <div className="w-4 h-4 bg-gray-300 dark:bg-muted rounded-full ml-4"></div>
+                        <span className="text-xs text-muted-foreground">Locked</span>
+                      </div>
+                    </div>
+
+                    <div className="relative">
+                      <img
+                        src="https://cdn.builder.io/api/v1/image/assets%2Fd926398ea245443c9b9cde312e68afa5%2Fdce4c8e486e7490eba27a9be1ec43b99?format=webp&width=800"
+                        alt="Achievement Cards Design Reference"
+                        className="w-full rounded-xl shadow-lg border border-border hover:shadow-xl transition-shadow duration-300"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-xl"></div>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
