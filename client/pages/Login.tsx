@@ -24,6 +24,7 @@ import {
 } from "../components/ui/tabs";
 import { Palette, Users, Trophy, Sparkles } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
+import { ThemeToggle } from '../components/ui/theme-toggle';
 
 export default function Login() {
   const [email, setEmail] = useState("");
