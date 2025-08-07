@@ -46,6 +46,8 @@ export default function Profile() {
   }, [userProfile]);
 
   const handleSaveProfile = async () => {
+    console.log('Saving profile with name:', editedName);
+
     if (!editedName.trim()) {
       toast.error('Display name cannot be empty');
       return;
@@ -58,19 +60,27 @@ export default function Profile() {
 
     setLoading(true);
     try {
+      console.log('Updating user profile for UID:', user.uid);
       const success = await updateUserProfile(user.uid, {
         displayName: editedName.trim()
       });
 
+      console.log('Update result:', success);
+
       if (success) {
         toast.success('Profile updated successfully!');
         setIsEditing(false);
+
+        // Force a small delay to ensure the update propagates
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
       } else {
-        toast.error('Failed to update profile');
+        toast.error('Failed to update profile - please try again');
       }
     } catch (error) {
       console.error('Profile update error:', error);
-      toast.error('Failed to update profile');
+      toast.error(`Update failed: ${error}`);
     } finally {
       setLoading(false);
     }
