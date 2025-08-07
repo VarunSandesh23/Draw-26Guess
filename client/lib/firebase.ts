@@ -139,29 +139,23 @@ export const generateRoomCode = (): string => {
 
 export const createRoom = async (creatorUid: string): Promise<string> => {
   const roomCode = generateRoomCode();
+  const roomRef = doc(db, 'rooms', roomCode);
 
-  // For mock system, just return the room code
-  // In a real implementation, this would create the room in Firestore
-  console.log(`Mock room created: ${roomCode} by user ${creatorUid}`);
+  const gameRoom: GameRoom = {
+    roomCode,
+    players: [],
+    round: 1,
+    maxRounds: 3,
+    started: false,
+    createdBy: creatorUid,
+    createdAt: new Date()
+  };
 
+  await setDoc(roomRef, gameRoom);
   return roomCode;
 };
 
-// Auth state observer for mock system
-export const onAuthStateChange = (callback: (user: any | null) => void) => {
-  // Initial call with current user
-  const currentUser = getCurrentMockUser();
-  callback(currentUser);
-
-  // Listen for mock auth state changes
-  const handler = (event: any) => {
-    callback(event.detail);
-  };
-
-  window.addEventListener('mockAuthStateChange', handler);
-
-  // Return unsubscribe function
-  return () => {
-    window.removeEventListener('mockAuthStateChange', handler);
-  };
+// Auth state observer
+export const onAuthStateChange = (callback: (user: User | null) => void) => {
+  return onAuthStateChanged(auth, callback);
 };
