@@ -431,6 +431,35 @@ export default function Dashboard() {
             </Card>
           </motion.div>
         </motion.div>
+
+        {/* Error Dialog */}
+        <Dialog open={errorDialogOpen} onOpenChange={setErrorDialogOpen}>
+          <DialogContent className="sm:max-w-md bg-card/95 backdrop-blur-sm">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 text-destructive">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+                Room Not Found
+              </DialogTitle>
+              <DialogDescription className="text-center py-4">
+                {errorMessage}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex justify-center">
+              <Button
+                onClick={() => {
+                  setErrorDialogOpen(false);
+                  setJoinDialogOpen(true); // Reopen join dialog
+                  setRoomCode(''); // Clear the invalid code
+                }}
+                className="bg-game-purple hover:bg-game-purple-dark"
+              >
+                Try Again
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </motion.div>
     </div>
   );
