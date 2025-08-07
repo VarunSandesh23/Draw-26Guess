@@ -142,10 +142,14 @@ export const signUpWithEmail = async (email: string, password: string, displayNa
 
 export const logout = async () => {
   try {
+    // Clear mock user if exists
+    localStorage.removeItem('draw_and_guess_demo_user');
+
+    // Also try to sign out from Firebase
     await signOut(auth);
   } catch (error) {
-    console.error('Logout error:', error);
-    throw error;
+    console.warn('Firebase logout failed, but mock user cleared');
+    // Don't throw error as mock logout succeeded
   }
 };
 
