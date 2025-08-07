@@ -117,6 +117,11 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-game-purple/20 flex items-center justify-center p-4">
+      {/* Theme Toggle */}
+      <div className="absolute top-6 right-6 z-20 hidden md:block">
+        <ThemeToggle />
+      </div>
+
       {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
