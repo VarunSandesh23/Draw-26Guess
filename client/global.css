@@ -62,6 +62,7 @@
   }
 
   .dark {
+    /* Dark mode colors */
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
 
@@ -89,6 +90,7 @@
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 263 70% 50%;
+
     --sidebar-background: 240 10% 3.9%;
     --sidebar-foreground: 0 0% 98%;
     --sidebar-primary: 263 70% 50%;
