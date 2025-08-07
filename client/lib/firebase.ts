@@ -250,7 +250,21 @@ export const createRoom = async (creatorUid: string): Promise<string> => {
   return roomCode;
 };
 
-// Auth state observer
-export const onAuthStateChange = (callback: (user: User | null) => void) => {
-  return onAuthStateChanged(auth, callback);
+// Auth state observer for mock system
+export const onAuthStateChange = (callback: (user: any | null) => void) => {
+  // Initial call with current user
+  const currentUser = getCurrentMockUser();
+  callback(currentUser);
+
+  // Listen for mock auth state changes
+  const handler = (event: any) => {
+    callback(event.detail);
+  };
+
+  window.addEventListener('mockAuthStateChange', handler);
+
+  // Return unsubscribe function
+  return () => {
+    window.removeEventListener('mockAuthStateChange', handler);
+  };
 };
