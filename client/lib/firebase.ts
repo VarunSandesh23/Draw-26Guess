@@ -1,23 +1,22 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, User } from 'firebase/auth';
 import { getFirestore, doc, setDoc, getDoc, collection, query, where, orderBy, onSnapshot } from 'firebase/firestore';
-import { getDatabase } from 'firebase/database';
 
 const firebaseConfig = {
   // These would be replaced with actual Firebase config
-  apiKey: "your-api-key",
-  authDomain: "your-auth-domain",
-  projectId: "your-project-id",
-  storageBucket: "your-storage-bucket",
-  messagingSenderId: "your-messaging-sender-id",
-  appId: "your-app-id",
-  databaseURL: "your-database-url"
+  // For demo purposes, using a minimal config that won't cause errors
+  apiKey: "demo-api-key",
+  authDomain: "demo-project.firebaseapp.com",
+  projectId: "demo-project",
+  storageBucket: "demo-project.appspot.com",
+  messagingSenderId: "123456789",
+  appId: "1:123456789:web:abcdef123456789"
 };
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
-export const realtimeDb = getDatabase(app);
+// Realtime Database will be added when needed for canvas synchronization
 
 const googleProvider = new GoogleAuthProvider();
 
