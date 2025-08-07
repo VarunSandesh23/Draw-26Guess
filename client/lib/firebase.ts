@@ -88,9 +88,7 @@ export const signUpWithEmail = async (email: string, password: string, displayNa
 
 export const logout = async () => {
   try {
-    saveCurrentMockUser(null);
-    // Trigger auth state change manually for mock system
-    window.dispatchEvent(new CustomEvent('mockAuthStateChange', { detail: null }));
+    await signOut(auth);
   } catch (error) {
     console.error('Logout error:', error);
     throw error;
