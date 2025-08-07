@@ -137,9 +137,9 @@ export default function Lobby() {
       return;
     }
     
-    // Check if at least 2 players and all are ready
-    if (room.players.length < 2) {
-      toast.error('Need at least 2 players to start');
+    // Check if at least 1 player and all are ready
+    if (room.players.length < 1) {
+      toast.error('Need at least 1 player to start');
       return;
     }
     
