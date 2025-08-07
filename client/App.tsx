@@ -67,6 +67,14 @@ function AppRoutes() {
         }
       />
       <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/lobby/:roomCode"
         element={
           <ProtectedRoute>
