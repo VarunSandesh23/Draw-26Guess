@@ -167,7 +167,7 @@ export default function Lobby() {
   };
 
   const isCreator = user && room && room.createdBy === user.uid;
-  const allPlayersReady = room?.players.every(p => p.isReady) && room.players.length >= 2;
+  const allPlayersReady = room?.players.every(p => p.isReady) && room.players.length >= 1;
 
   if (loading) {
     return (
