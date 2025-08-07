@@ -48,10 +48,26 @@ export default function Dashboard() {
     }
   };
 
-  const handleJoinRoom = () => {
+  const handleJoinRoom = async () => {
     if (roomCode.trim()) {
-      navigate(`/lobby/${roomCode.toUpperCase()}`);
-      setJoinDialogOpen(false);
+      const code = roomCode.toUpperCase();
+
+      // Check if room exists before navigating
+      try {
+        const room = await import('../lib/firebase').then(fb => fb.getRoom(code));
+        if (room) {
+          navigate(`/lobby/${code}`);
+          setJoinDialogOpen(false);
+        } else {
+          // Show error in the dialog
+          alert('Room not found. Please check the room code and try again.');
+        }
+      } catch (error) {
+        console.error('Error checking room:', error);
+        // If there's an error, still navigate (might be a network issue)
+        navigate(`/lobby/${code}`);
+        setJoinDialogOpen(false);
+      }
     }
   };
 
