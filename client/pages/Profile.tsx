@@ -29,6 +29,7 @@ import {
   Zap
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { ThemeToggle } from '../components/ui/theme-toggle';
 
 export default function Profile() {
   const { user, userProfile } = useAuth();
