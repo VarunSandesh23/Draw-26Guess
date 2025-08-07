@@ -238,6 +238,20 @@ export const createRoom = async (creatorUid: string): Promise<string> => {
 };
 
 // Auth state observer
-export const onAuthStateChange = (callback: (user: User | null) => void) => {
-  return onAuthStateChanged(auth, callback);
+export const onAuthStateChange = (callback: (user: any | null) => void) => {
+  // Check for mock user on page load
+  const storedUser = localStorage.getItem('draw_and_guess_demo_user');
+  if (storedUser) {
+    const userData = JSON.parse(storedUser);
+    // If we have a mock user, call callback immediately
+    setTimeout(() => callback(userData), 0);
+  }
+
+  // Also listen to real Firebase auth changes
+  return onAuthStateChanged(auth, (user) => {
+    // Only call callback for real Firebase users if no mock user exists
+    if (!storedUser) {
+      callback(user);
+    }
+  });
 };
