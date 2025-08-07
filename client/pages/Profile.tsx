@@ -44,12 +44,25 @@ export default function Profile() {
       return;
     }
 
+    if (!user) {
+      toast.error('User not found');
+      return;
+    }
+
     setLoading(true);
     try {
-      // In a real app, this would update the Firebase user profile
-      toast.success('Profile updated successfully!');
-      setIsEditing(false);
+      const success = await updateUserProfile(user.uid, {
+        displayName: editedName.trim()
+      });
+
+      if (success) {
+        toast.success('Profile updated successfully!');
+        setIsEditing(false);
+      } else {
+        toast.error('Failed to update profile');
+      }
     } catch (error) {
+      console.error('Profile update error:', error);
       toast.error('Failed to update profile');
     } finally {
       setLoading(false);
