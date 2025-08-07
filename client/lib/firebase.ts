@@ -54,9 +54,8 @@ export interface Player {
 // Auth functions
 export const signInWithGoogle = async () => {
   try {
-    const result = await signInWithPopup(auth, googleProvider);
-    await createUserProfile(result.user);
-    return result.user;
+    // For demo purposes, show a message that Firebase needs to be configured
+    throw new Error('Please configure Firebase with your own project credentials to enable authentication.');
   } catch (error) {
     console.error('Google sign in error:', error);
     throw error;
@@ -65,8 +64,8 @@ export const signInWithGoogle = async () => {
 
 export const signInWithEmail = async (email: string, password: string) => {
   try {
-    const result = await signInWithEmailAndPassword(auth, email, password);
-    return result.user;
+    // For demo purposes, show a message that Firebase needs to be configured
+    throw new Error('Please configure Firebase with your own project credentials to enable authentication.');
   } catch (error) {
     console.error('Email sign in error:', error);
     throw error;
@@ -75,9 +74,8 @@ export const signInWithEmail = async (email: string, password: string) => {
 
 export const signUpWithEmail = async (email: string, password: string, displayName: string) => {
   try {
-    const result = await createUserWithEmailAndPassword(auth, email, password);
-    await createUserProfile(result.user, displayName);
-    return result.user;
+    // For demo purposes, show a message that Firebase needs to be configured
+    throw new Error('Please configure Firebase with your own project credentials to enable authentication.');
   } catch (error) {
     console.error('Email sign up error:', error);
     throw error;
