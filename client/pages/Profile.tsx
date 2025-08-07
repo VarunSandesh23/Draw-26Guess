@@ -70,11 +70,6 @@ export default function Profile() {
       if (success) {
         toast.success('Profile updated successfully!');
         setIsEditing(false);
-
-        // Force a small delay to ensure the update propagates
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
       } else {
         toast.error('Failed to update profile - please try again');
       }
