@@ -1,48 +1,54 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { createRoom, logout } from '../lib/firebase';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { Badge } from '../components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogDescription, 
-  DialogHeader, 
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import { createRoom, logout } from "../lib/firebase";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
+import { Badge } from "../components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
   DialogTitle,
-  DialogTrigger 
-} from '../components/ui/dialog';
-import { 
-  Palette, 
-  Plus, 
-  Users, 
-  Trophy, 
-  Star, 
-  LogOut, 
+  DialogTrigger,
+} from "../components/ui/dialog";
+import {
+  Palette,
+  Plus,
+  Users,
+  Trophy,
+  Star,
+  LogOut,
   GamepadIcon,
-  Sparkles
-} from 'lucide-react';
+  Sparkles,
+} from "lucide-react";
 
 export default function Dashboard() {
   const { user, userProfile } = useAuth();
   const navigate = useNavigate();
-  const [roomCode, setRoomCode] = useState('');
+  const [roomCode, setRoomCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [joinDialogOpen, setJoinDialogOpen] = useState(false);
 
   const handleCreateRoom = async () => {
     if (!user) return;
-    
+
     try {
       setLoading(true);
       const newRoomCode = await createRoom(user.uid);
       navigate(`/lobby/${newRoomCode}`);
     } catch (error) {
-      console.error('Error creating room:', error);
+      console.error("Error creating room:", error);
     } finally {
       setLoading(false);
     }
@@ -54,16 +60,18 @@ export default function Dashboard() {
 
       // Check if room exists before navigating
       try {
-        const room = await import('../lib/firebase').then(fb => fb.getRoom(code));
+        const room = await import("../lib/firebase").then((fb) =>
+          fb.getRoom(code),
+        );
         if (room) {
           navigate(`/lobby/${code}`);
           setJoinDialogOpen(false);
         } else {
           // Show error in the dialog
-          alert('Room not found. Please check the room code and try again.');
+          alert("Room not found. Please check the room code and try again.");
         }
       } catch (error) {
-        console.error('Error checking room:', error);
+        console.error("Error checking room:", error);
         // If there's an error, still navigate (might be a network issue)
         navigate(`/lobby/${code}`);
         setJoinDialogOpen(false);
@@ -74,9 +82,9 @@ export default function Dashboard() {
   const handleLogout = async () => {
     try {
       await logout();
-      navigate('/');
+      navigate("/");
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error("Logout error:", error);
     }
   };
 
@@ -85,9 +93,9 @@ export default function Dashboard() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
-      }
-    }
+        staggerChildren: 0.1,
+      },
+    },
   };
 
   const itemVariants = {
@@ -97,9 +105,9 @@ export default function Dashboard() {
       opacity: 1,
       transition: {
         duration: 0.6,
-        ease: "easeOut"
-      }
-    }
+        ease: "easeOut",
+      },
+    },
   };
 
   const cardHoverVariants = {
@@ -108,20 +116,20 @@ export default function Dashboard() {
       y: -5,
       transition: {
         duration: 0.2,
-        ease: "easeOut"
-      }
-    }
+        ease: "easeOut",
+      },
+    },
   };
 
   const buttonVariants = {
-    hover: { 
+    hover: {
       scale: 1.05,
-      transition: { duration: 0.2 }
+      transition: { duration: 0.2 },
     },
-    tap: { 
+    tap: {
       scale: 0.95,
-      transition: { duration: 0.1 }
-    }
+      transition: { duration: 0.1 },
+    },
   };
 
   const floatingVariants = {
@@ -131,25 +139,25 @@ export default function Dashboard() {
       transition: {
         duration: 4,
         repeat: Infinity,
-        ease: "easeInOut"
-      }
-    }
+        ease: "easeInOut",
+      },
+    },
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-game-purple/20 p-4">
       {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div 
+        <motion.div
           className="absolute top-10 right-20 w-48 h-48 bg-game-teal/20 rounded-full blur-3xl"
           variants={floatingVariants}
           animate="animate"
         />
-        <motion.div 
+        <motion.div
           className="absolute bottom-20 left-20 w-64 h-64 bg-game-orange/20 rounded-full blur-3xl"
           variants={floatingVariants}
           animate="animate"
-          style={{ animationDelay: '2s' }}
+          style={{ animationDelay: "2s" }}
         />
       </div>
 
@@ -160,12 +168,12 @@ export default function Dashboard() {
         animate="visible"
       >
         {/* Header */}
-        <motion.header 
+        <motion.header
           className="flex items-center justify-between mb-8"
           variants={itemVariants}
         >
           <div className="flex items-center space-x-4">
-            <motion.div 
+            <motion.div
               className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-game-purple to-game-teal rounded-xl shadow-game-glow"
               whileHover={{ scale: 1.1, rotate: 5 }}
             >
@@ -175,11 +183,13 @@ export default function Dashboard() {
               <h1 className="text-3xl font-bold bg-gradient-to-r from-game-purple via-game-teal to-game-orange bg-clip-text text-transparent">
                 Draw & Guess
               </h1>
-              <p className="text-muted-foreground">Welcome back, {userProfile?.displayName}!</p>
+              <p className="text-muted-foreground">
+                Welcome back, {userProfile?.displayName}!
+              </p>
             </div>
           </div>
-          
-          <motion.div 
+
+          <motion.div
             className="flex items-center space-x-4"
             variants={itemVariants}
           >
@@ -188,20 +198,25 @@ export default function Dashboard() {
               className="flex items-center space-x-3 bg-card/50 backdrop-blur-sm border rounded-full px-4 py-2"
             >
               <Avatar className="w-8 h-8">
-                <AvatarImage src={userProfile?.photoURL} alt={userProfile?.displayName} />
+                <AvatarImage
+                  src={userProfile?.photoURL}
+                  alt={userProfile?.displayName}
+                />
                 <AvatarFallback className="bg-gradient-to-br from-game-purple to-game-teal text-white text-sm">
                   {userProfile?.displayName?.charAt(0)?.toUpperCase()}
                 </AvatarFallback>
               </Avatar>
               <div className="text-sm">
                 <p className="font-medium">{userProfile?.displayName}</p>
-                <p className="text-muted-foreground text-xs">Score: {userProfile?.totalScore || 0}</p>
+                <p className="text-muted-foreground text-xs">
+                  Score: {userProfile?.totalScore || 0}
+                </p>
               </div>
             </motion.div>
-            
-            <Button 
-              variant="outline" 
-              size="sm" 
+
+            <Button
+              variant="outline"
+              size="sm"
               onClick={handleLogout}
               className="hover:bg-destructive/10 hover:text-destructive hover:border-destructive"
             >
@@ -211,54 +226,57 @@ export default function Dashboard() {
         </motion.header>
 
         {/* Stats Cards */}
-        <motion.div 
+        <motion.div
           className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"
           variants={itemVariants}
         >
-          <motion.div 
-            variants={cardHoverVariants}
-            whileHover="hover"
-          >
+          <motion.div variants={cardHoverVariants} whileHover="hover">
             <Card className="bg-gradient-to-br from-game-purple/20 to-game-purple/10 border-game-purple/30 backdrop-blur-sm">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Games Played</p>
-                    <p className="text-3xl font-bold text-game-purple">{userProfile?.gamesPlayed || 0}</p>
+                    <p className="text-sm font-medium text-muted-foreground">
+                      Games Played
+                    </p>
+                    <p className="text-3xl font-bold text-game-purple">
+                      {userProfile?.gamesPlayed || 0}
+                    </p>
                   </div>
                   <GamepadIcon className="w-8 h-8 text-game-purple" />
                 </div>
               </CardContent>
             </Card>
           </motion.div>
-          
-          <motion.div 
-            variants={cardHoverVariants}
-            whileHover="hover"
-          >
+
+          <motion.div variants={cardHoverVariants} whileHover="hover">
             <Card className="bg-gradient-to-br from-game-teal/20 to-game-teal/10 border-game-teal/30 backdrop-blur-sm">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Games Won</p>
-                    <p className="text-3xl font-bold text-game-teal">{userProfile?.gamesWon || 0}</p>
+                    <p className="text-sm font-medium text-muted-foreground">
+                      Games Won
+                    </p>
+                    <p className="text-3xl font-bold text-game-teal">
+                      {userProfile?.gamesWon || 0}
+                    </p>
                   </div>
                   <Trophy className="w-8 h-8 text-game-teal" />
                 </div>
               </CardContent>
             </Card>
           </motion.div>
-          
-          <motion.div 
-            variants={cardHoverVariants}
-            whileHover="hover"
-          >
+
+          <motion.div variants={cardHoverVariants} whileHover="hover">
             <Card className="bg-gradient-to-br from-game-orange/20 to-game-orange/10 border-game-orange/30 backdrop-blur-sm">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Total Score</p>
-                    <p className="text-3xl font-bold text-game-orange">{userProfile?.totalScore || 0}</p>
+                    <p className="text-sm font-medium text-muted-foreground">
+                      Total Score
+                    </p>
+                    <p className="text-3xl font-bold text-game-orange">
+                      {userProfile?.totalScore || 0}
+                    </p>
                   </div>
                   <Star className="w-8 h-8 text-game-orange" />
                 </div>
@@ -268,19 +286,16 @@ export default function Dashboard() {
         </motion.div>
 
         {/* Main Action Cards */}
-        <motion.div 
+        <motion.div
           className="grid grid-cols-1 md:grid-cols-2 gap-8"
           variants={itemVariants}
         >
           {/* Create Room Card */}
-          <motion.div 
-            variants={cardHoverVariants}
-            whileHover="hover"
-          >
+          <motion.div variants={cardHoverVariants} whileHover="hover">
             <Card className="relative overflow-hidden bg-gradient-to-br from-game-purple/10 to-game-purple/5 border-game-purple/30 backdrop-blur-sm">
               <div className="absolute inset-0 bg-gradient-to-br from-game-purple/5 to-transparent" />
               <CardHeader className="relative z-10">
-                <motion.div 
+                <motion.div
                   className="w-16 h-16 bg-gradient-to-br from-game-purple to-game-purple-dark rounded-2xl flex items-center justify-center mb-4 shadow-game-glow"
                   variants={floatingVariants}
                   animate="animate"
@@ -295,11 +310,17 @@ export default function Dashboard() {
               <CardContent className="relative z-10">
                 <div className="space-y-4">
                   <div className="flex flex-wrap gap-2">
-                    <Badge variant="secondary" className="bg-game-purple/20 text-game-purple border-game-purple/30">
+                    <Badge
+                      variant="secondary"
+                      className="bg-game-purple/20 text-game-purple border-game-purple/30"
+                    >
                       <Users className="w-3 h-3 mr-1" />
                       2-8 Players
                     </Badge>
-                    <Badge variant="secondary" className="bg-game-teal/20 text-game-teal border-game-teal/30">
+                    <Badge
+                      variant="secondary"
+                      className="bg-game-teal/20 text-game-teal border-game-teal/30"
+                    >
                       <Sparkles className="w-3 h-3 mr-1" />
                       Real-time
                     </Badge>
@@ -309,12 +330,12 @@ export default function Dashboard() {
                     whileHover="hover"
                     whileTap="tap"
                   >
-                    <Button 
+                    <Button
                       onClick={handleCreateRoom}
                       disabled={loading}
                       className="w-full bg-gradient-to-r from-game-purple to-game-purple-dark hover:from-game-purple-dark hover:to-game-purple text-white font-semibold text-lg py-6"
                     >
-                      {loading ? 'Creating Room...' : 'Create New Room'}
+                      {loading ? "Creating Room..." : "Create New Room"}
                     </Button>
                   </motion.div>
                 </div>
@@ -323,18 +344,15 @@ export default function Dashboard() {
           </motion.div>
 
           {/* Join Room Card */}
-          <motion.div 
-            variants={cardHoverVariants}
-            whileHover="hover"
-          >
+          <motion.div variants={cardHoverVariants} whileHover="hover">
             <Card className="relative overflow-hidden bg-gradient-to-br from-game-teal/10 to-game-teal/5 border-game-teal/30 backdrop-blur-sm">
               <div className="absolute inset-0 bg-gradient-to-br from-game-teal/5 to-transparent" />
               <CardHeader className="relative z-10">
-                <motion.div 
+                <motion.div
                   className="w-16 h-16 bg-gradient-to-br from-game-teal to-game-teal-light rounded-2xl flex items-center justify-center mb-4 shadow-game-glow"
                   variants={floatingVariants}
                   animate="animate"
-                  style={{ animationDelay: '1s' }}
+                  style={{ animationDelay: "1s" }}
                 >
                   <Users className="w-8 h-8 text-white" />
                 </motion.div>
@@ -346,25 +364,32 @@ export default function Dashboard() {
               <CardContent className="relative z-10">
                 <div className="space-y-4">
                   <div className="flex flex-wrap gap-2">
-                    <Badge variant="secondary" className="bg-game-orange/20 text-game-orange border-game-orange/30">
+                    <Badge
+                      variant="secondary"
+                      className="bg-game-orange/20 text-game-orange border-game-orange/30"
+                    >
                       <GamepadIcon className="w-3 h-3 mr-1" />
                       Quick Join
                     </Badge>
-                    <Badge variant="secondary" className="bg-game-success/20 text-game-success border-game-success/30">
+                    <Badge
+                      variant="secondary"
+                      className="bg-game-success/20 text-game-success border-game-success/30"
+                    >
                       Easy Setup
                     </Badge>
                   </div>
-                  
-                  <Dialog open={joinDialogOpen} onOpenChange={setJoinDialogOpen}>
+
+                  <Dialog
+                    open={joinDialogOpen}
+                    onOpenChange={setJoinDialogOpen}
+                  >
                     <DialogTrigger asChild>
                       <motion.div
                         variants={buttonVariants}
                         whileHover="hover"
                         whileTap="tap"
                       >
-                        <Button 
-                          className="w-full bg-gradient-to-r from-game-teal to-game-teal-light hover:from-game-teal-light hover:to-game-teal text-white font-semibold text-lg py-6"
-                        >
+                        <Button className="w-full bg-gradient-to-r from-game-teal to-game-teal-light hover:from-game-teal-light hover:to-game-teal text-white font-semibold text-lg py-6">
                           Join Existing Room
                         </Button>
                       </motion.div>
@@ -380,11 +405,13 @@ export default function Dashboard() {
                         <Input
                           placeholder="Enter room code (e.g., ABC123)"
                           value={roomCode}
-                          onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
+                          onChange={(e) =>
+                            setRoomCode(e.target.value.toUpperCase())
+                          }
                           maxLength={6}
                           className="text-center text-xl font-mono tracking-wider"
                         />
-                        <Button 
+                        <Button
                           onClick={handleJoinRoom}
                           disabled={roomCode.length !== 6}
                           className="w-full bg-gradient-to-r from-game-teal to-game-teal-light"

@@ -1,9 +1,15 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Button } from '../components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { ArrowLeft, Trophy, Medal, Award } from 'lucide-react';
+import React from "react";
+import { motion } from "framer-motion";
+import { useParams, useNavigate } from "react-router-dom";
+import { Button } from "../components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
+import { ArrowLeft, Trophy, Medal, Award } from "lucide-react";
 
 export default function Scoreboard() {
   const { roomCode } = useParams();
@@ -17,9 +23,9 @@ export default function Scoreboard() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-6"
         >
-          <Button 
-            variant="outline" 
-            onClick={() => navigate('/dashboard')}
+          <Button
+            variant="outline"
+            onClick={() => navigate("/dashboard")}
             className="mb-4"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
@@ -39,7 +45,8 @@ export default function Scoreboard() {
               </div>
               <CardTitle className="text-3xl">Final Scoreboard</CardTitle>
               <CardDescription className="text-lg">
-                Game Results for Room: <span className="font-mono text-xl font-bold">{roomCode}</span>
+                Game Results for Room:{" "}
+                <span className="font-mono text-xl font-bold">{roomCode}</span>
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -47,20 +54,26 @@ export default function Scoreboard() {
                 <div className="p-4 bg-game-orange/10 rounded-lg border border-game-orange/20">
                   <Trophy className="w-8 h-8 text-game-orange mx-auto mb-2" />
                   <h4 className="font-semibold">Winner Celebration</h4>
-                  <p className="text-sm text-muted-foreground">Confetti and animations</p>
+                  <p className="text-sm text-muted-foreground">
+                    Confetti and animations
+                  </p>
                 </div>
                 <div className="p-4 bg-game-purple/10 rounded-lg border border-game-purple/20">
                   <Medal className="w-8 h-8 text-game-purple mx-auto mb-2" />
                   <h4 className="font-semibold">Score Breakdown</h4>
-                  <p className="text-sm text-muted-foreground">Detailed player rankings</p>
+                  <p className="text-sm text-muted-foreground">
+                    Detailed player rankings
+                  </p>
                 </div>
                 <div className="p-4 bg-game-teal/10 rounded-lg border border-game-teal/20">
                   <Award className="w-8 h-8 text-game-teal mx-auto mb-2" />
                   <h4 className="font-semibold">Game Stats</h4>
-                  <p className="text-sm text-muted-foreground">Round by round analysis</p>
+                  <p className="text-sm text-muted-foreground">
+                    Round by round analysis
+                  </p>
                 </div>
               </div>
-              
+
               <div className="p-8 bg-muted/50 rounded-lg">
                 <Trophy className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                 <h3 className="text-lg font-semibold mb-2">Coming Soon!</h3>
@@ -76,7 +89,8 @@ export default function Scoreboard() {
                 </ul>
               </div>
               <p className="text-sm text-muted-foreground">
-                Continue prompting to have this page implemented with full functionality!
+                Continue prompting to have this page implemented with full
+                functionality!
               </p>
             </CardContent>
           </Card>

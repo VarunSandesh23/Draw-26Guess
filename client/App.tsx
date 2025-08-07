@@ -49,31 +49,46 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={
-        <PublicRoute>
-          <Login />
-        </PublicRoute>
-      } />
-      <Route path="/dashboard" element={
-        <ProtectedRoute>
-          <Dashboard />
-        </ProtectedRoute>
-      } />
-      <Route path="/lobby/:roomCode" element={
-        <ProtectedRoute>
-          <Lobby />
-        </ProtectedRoute>
-      } />
-      <Route path="/game/:roomCode" element={
-        <ProtectedRoute>
-          <GameRoom />
-        </ProtectedRoute>
-      } />
-      <Route path="/scoreboard/:roomCode" element={
-        <ProtectedRoute>
-          <Scoreboard />
-        </ProtectedRoute>
-      } />
+      <Route
+        path="/"
+        element={
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/lobby/:roomCode"
+        element={
+          <ProtectedRoute>
+            <Lobby />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/game/:roomCode"
+        element={
+          <ProtectedRoute>
+            <GameRoom />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/scoreboard/:roomCode"
+        element={
+          <ProtectedRoute>
+            <Scoreboard />
+          </ProtectedRoute>
+        }
+      />
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
       <Route path="*" element={<NotFound />} />
     </Routes>

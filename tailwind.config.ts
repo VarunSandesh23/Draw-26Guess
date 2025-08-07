@@ -77,8 +77,10 @@ export default {
         "2xl": "calc(var(--radius) + 8px)",
       },
       boxShadow: {
-        "game-glow": "0 0 20px hsl(var(--game-purple) / 0.3), 0 0 40px hsl(var(--game-purple) / 0.1)",
-        "game-card": "0 10px 30px hsl(var(--foreground) / 0.1), 0 0 0 1px hsl(var(--border))",
+        "game-glow":
+          "0 0 20px hsl(var(--game-purple) / 0.3), 0 0 40px hsl(var(--game-purple) / 0.1)",
+        "game-card":
+          "0 10px 30px hsl(var(--foreground) / 0.1), 0 0 0 1px hsl(var(--border))",
       },
       keyframes: {
         "accordion-down": {
@@ -97,13 +99,16 @@ export default {
             height: "0",
           },
         },
-        "float": {
+        float: {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-10px)" },
         },
-        "glow": {
+        glow: {
           "0%, 100%": { boxShadow: "0 0 20px hsl(var(--game-purple))" },
-          "50%": { boxShadow: "0 0 30px hsl(var(--game-purple)), 0 0 40px hsl(var(--game-purple))" },
+          "50%": {
+            boxShadow:
+              "0 0 30px hsl(var(--game-purple)), 0 0 40px hsl(var(--game-purple))",
+          },
         },
         "slide-in-right": {
           "0%": { transform: "translateX(100%)", opacity: "0" },
@@ -123,8 +128,8 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "float": "float 3s ease-in-out infinite",
-        "glow": "glow 2s ease-in-out infinite",
+        float: "float 3s ease-in-out infinite",
+        glow: "glow 2s ease-in-out infinite",
         "slide-in-right": "slide-in-right 0.5s ease-out",
         "slide-in-left": "slide-in-left 0.5s ease-out",
         "bounce-in": "bounce-in 0.6s ease-out",

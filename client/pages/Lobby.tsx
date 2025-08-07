@@ -1,24 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { getRoom, joinRoom, updateRoom, Player, GameRoom } from '../lib/firebase';
-import { Button } from '../components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { Badge } from '../components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
-import { 
-  ArrowLeft, 
-  Users, 
-  Play, 
-  Crown, 
-  Check, 
-  Clock, 
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useParams, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import {
+  getRoom,
+  joinRoom,
+  updateRoom,
+  Player,
+  GameRoom,
+} from "../lib/firebase";
+import { Button } from "../components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
+import { Badge } from "../components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
+import {
+  ArrowLeft,
+  Users,
+  Play,
+  Crown,
+  Check,
+  Clock,
   Copy,
   UserPlus,
-  Settings
-} from 'lucide-react';
-import { toast } from 'sonner';
+  Settings,
+} from "lucide-react";
+import { toast } from "sonner";
 
 export default function Lobby() {
   const { roomCode } = useParams<{ roomCode: string }>();
@@ -33,44 +45,46 @@ export default function Lobby() {
   useEffect(() => {
     const loadRoom = async () => {
       if (!roomCode || !user) return;
-      
+
       try {
         const roomData = await getRoom(roomCode);
         if (!roomData) {
-          toast.error('Room not found');
-          navigate('/dashboard');
+          toast.error("Room not found");
+          navigate("/dashboard");
           return;
         }
-        
+
         setRoom(roomData);
-        
+
         // Auto-join the room if user is not already in it
-        const isPlayerInRoom = roomData.players.some(p => p.uid === user.uid);
+        const isPlayerInRoom = roomData.players.some((p) => p.uid === user.uid);
         if (!isPlayerInRoom) {
           setJoiningRoom(true);
           const newPlayer: Player = {
             uid: user.uid,
-            name: userProfile?.displayName || 'Anonymous',
+            name: userProfile?.displayName || "Anonymous",
             photoURL: userProfile?.photoURL,
             score: 0,
-            isReady: false
+            isReady: false,
           };
-          
+
           const success = await joinRoom(roomCode, newPlayer);
           if (success) {
             const updatedRoom = await getRoom(roomCode);
             setRoom(updatedRoom);
-            toast.success('Joined room successfully!');
+            toast.success("Joined room successfully!");
           }
           setJoiningRoom(false);
         } else {
           // Check if current user is ready
-          const currentPlayer = roomData.players.find(p => p.uid === user.uid);
+          const currentPlayer = roomData.players.find(
+            (p) => p.uid === user.uid,
+          );
           setIsReady(currentPlayer?.isReady || false);
         }
       } catch (error) {
-        console.error('Error loading room:', error);
-        toast.error('Failed to load room');
+        console.error("Error loading room:", error);
+        toast.error("Failed to load room");
       } finally {
         setLoading(false);
       }
@@ -82,24 +96,26 @@ export default function Lobby() {
   // Auto-refresh room data every 2 seconds
   useEffect(() => {
     if (!roomCode || !room) return;
-    
+
     const interval = setInterval(async () => {
       try {
         const updatedRoom = await getRoom(roomCode);
         if (updatedRoom) {
           setRoom(updatedRoom);
-          
+
           // Update ready state if it changed
-          const currentPlayer = updatedRoom.players.find(p => p.uid === user?.uid);
+          const currentPlayer = updatedRoom.players.find(
+            (p) => p.uid === user?.uid,
+          );
           setIsReady(currentPlayer?.isReady || false);
-          
+
           // Check if game started
           if (updatedRoom.started) {
             navigate(`/game/${roomCode}`);
           }
         }
       } catch (error) {
-        console.error('Error refreshing room:', error);
+        console.error("Error refreshing room:", error);
       }
     }, 2000);
 
@@ -108,66 +124,65 @@ export default function Lobby() {
 
   const handleToggleReady = async () => {
     if (!room || !user || !roomCode) return;
-    
+
     const newReadyState = !isReady;
     setIsReady(newReadyState);
-    
+
     // Update player ready state
-    const updatedPlayers = room.players.map(player => 
-      player.uid === user.uid 
-        ? { ...player, isReady: newReadyState }
-        : player
+    const updatedPlayers = room.players.map((player) =>
+      player.uid === user.uid ? { ...player, isReady: newReadyState } : player,
     );
-    
+
     const success = await updateRoom(roomCode, { players: updatedPlayers });
     if (success) {
-      toast.success(newReadyState ? 'You are ready!' : 'You are not ready');
+      toast.success(newReadyState ? "You are ready!" : "You are not ready");
     } else {
       setIsReady(!newReadyState); // Revert on failure
-      toast.error('Failed to update ready state');
+      toast.error("Failed to update ready state");
     }
   };
 
   const handleStartGame = async () => {
     if (!room || !user || !roomCode) return;
-    
+
     // Check if user is room creator
     if (room.createdBy !== user.uid) {
-      toast.error('Only the room creator can start the game');
+      toast.error("Only the room creator can start the game");
       return;
     }
-    
+
     // Check if at least 1 player and all are ready
     if (room.players.length < 1) {
-      toast.error('Need at least 1 player to start');
+      toast.error("Need at least 1 player to start");
       return;
     }
-    
-    const allReady = room.players.every(p => p.isReady);
+
+    const allReady = room.players.every((p) => p.isReady);
     if (!allReady) {
-      toast.error('All players must be ready to start');
+      toast.error("All players must be ready to start");
       return;
     }
-    
+
     // Start the game
     const success = await updateRoom(roomCode, { started: true });
     if (success) {
-      toast.success('Game starting!');
+      toast.success("Game starting!");
       navigate(`/game/${roomCode}`);
     } else {
-      toast.error('Failed to start game');
+      toast.error("Failed to start game");
     }
   };
 
   const copyRoomCode = () => {
     if (roomCode) {
       navigator.clipboard.writeText(roomCode);
-      toast.success('Room code copied to clipboard!');
+      toast.success("Room code copied to clipboard!");
     }
   };
 
   const isCreator = user && room && room.createdBy === user.uid;
-  const allPlayersReady = room?.players.every(p => p.isReady) && room.players.length >= 1;
+  const allPlayersReady =
+    room?.players.every((p) => p.isReady) && room.players.length >= 1;
 
   if (loading) {
     return (
@@ -186,8 +201,10 @@ export default function Lobby() {
         <Card className="text-center">
           <CardContent className="p-8">
             <h2 className="text-2xl font-bold mb-4">Room not found</h2>
-            <p className="text-muted-foreground mb-4">The room you're looking for doesn't exist.</p>
-            <Button onClick={() => navigate('/dashboard')}>
+            <p className="text-muted-foreground mb-4">
+              The room you're looking for doesn't exist.
+            </p>
+            <Button onClick={() => navigate("/dashboard")}>
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Dashboard
             </Button>
@@ -201,15 +218,20 @@ export default function Lobby() {
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-game-purple/20 p-4">
       {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div 
+        <motion.div
           className="absolute top-20 right-20 w-64 h-64 bg-game-teal/20 rounded-full blur-3xl"
           animate={{ y: [-10, 10, -10], rotate: [-2, 2, -2] }}
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
         />
-        <motion.div 
+        <motion.div
           className="absolute bottom-20 left-20 w-48 h-48 bg-game-orange/20 rounded-full blur-3xl"
           animate={{ y: [10, -10, 10], rotate: [2, -2, 2] }}
-          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          transition={{
+            duration: 3,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1,
+          }}
         />
       </div>
 
@@ -220,9 +242,9 @@ export default function Lobby() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-6"
         >
-          <Button 
-            variant="outline" 
-            onClick={() => navigate('/dashboard')}
+          <Button
+            variant="outline"
+            onClick={() => navigate("/dashboard")}
             className="mb-4"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
@@ -245,8 +267,8 @@ export default function Lobby() {
                 </div>
                 <CardTitle className="text-2xl">Game Lobby</CardTitle>
                 <CardDescription className="text-lg">
-                  Room Code: 
-                  <button 
+                  Room Code:
+                  <button
                     onClick={copyRoomCode}
                     className="font-mono text-xl font-bold ml-2 hover:text-game-purple transition-colors inline-flex items-center gap-1"
                   >
@@ -257,11 +279,17 @@ export default function Lobby() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex flex-wrap gap-2">
-                  <Badge variant="secondary" className="bg-game-teal/20 text-game-teal border-game-teal/30">
+                  <Badge
+                    variant="secondary"
+                    className="bg-game-teal/20 text-game-teal border-game-teal/30"
+                  >
                     <Users className="w-3 h-3 mr-1" />
                     {room.players.length}/8 Players
                   </Badge>
-                  <Badge variant="secondary" className="bg-game-orange/20 text-game-orange border-game-orange/30">
+                  <Badge
+                    variant="secondary"
+                    className="bg-game-orange/20 text-game-orange border-game-orange/30"
+                  >
                     <Settings className="w-3 h-3 mr-1" />
                     {room.maxRounds} Rounds
                   </Badge>
@@ -278,9 +306,10 @@ export default function Lobby() {
                     <Button
                       onClick={handleToggleReady}
                       variant={isReady ? "default" : "outline"}
-                      className={`w-full ${isReady 
-                        ? 'bg-game-success hover:bg-game-success/80' 
-                        : 'border-game-purple text-game-purple hover:bg-game-purple/10'
+                      className={`w-full ${
+                        isReady
+                          ? "bg-game-success hover:bg-game-success/80"
+                          : "border-game-purple text-game-purple hover:bg-game-purple/10"
                       }`}
                       disabled={joiningRoom}
                     >
@@ -304,7 +333,7 @@ export default function Lobby() {
                         className="w-full bg-gradient-to-r from-game-orange to-game-orange-light hover:from-game-orange-light hover:to-game-orange"
                       >
                         <Play className="w-4 h-4 mr-2" />
-                        {allPlayersReady ? 'Start Game' : 'Waiting for Players'}
+                        {allPlayersReady ? "Start Game" : "Waiting for Players"}
                       </Button>
                     )}
                   </div>
@@ -327,7 +356,9 @@ export default function Lobby() {
                   Players ({room.players.length})
                 </CardTitle>
                 <CardDescription>
-                  {!room.started ? 'Waiting for all players to be ready...' : 'Game in progress'}
+                  {!room.started
+                    ? "Waiting for all players to be ready..."
+                    : "Game in progress"}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -341,15 +372,18 @@ export default function Lobby() {
                         exit={{ opacity: 0, scale: 0.9, y: -20 }}
                         transition={{ delay: index * 0.1 }}
                         className={`p-4 rounded-xl border transition-all ${
-                          player.isReady 
-                            ? 'bg-game-success/10 border-game-success/30' 
-                            : 'bg-card border-border'
+                          player.isReady
+                            ? "bg-game-success/10 border-game-success/30"
+                            : "bg-card border-border"
                         }`}
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-3">
                             <Avatar className="w-10 h-10">
-                              <AvatarImage src={player.photoURL || undefined} alt={player.name} />
+                              <AvatarImage
+                                src={player.photoURL || undefined}
+                                alt={player.name}
+                              />
                               <AvatarFallback className="bg-gradient-to-br from-game-purple to-game-teal text-white">
                                 {player.name.charAt(0).toUpperCase()}
                               </AvatarFallback>
@@ -383,14 +417,18 @@ export default function Lobby() {
                       </motion.div>
                     ))}
                   </AnimatePresence>
-                  
+
                   {/* Empty slots */}
-                  {Array.from({ length: Math.max(0, 8 - room.players.length) }).map((_, index) => (
+                  {Array.from({
+                    length: Math.max(0, 8 - room.players.length),
+                  }).map((_, index) => (
                     <motion.div
                       key={`empty-${index}`}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      transition={{ delay: (room.players.length + index) * 0.1 }}
+                      transition={{
+                        delay: (room.players.length + index) * 0.1,
+                      }}
                       className="p-4 rounded-xl border-2 border-dashed border-muted-foreground/30 flex items-center justify-center"
                     >
                       <div className="text-center text-muted-foreground">

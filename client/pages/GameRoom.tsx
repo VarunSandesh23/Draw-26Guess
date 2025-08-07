@@ -1,29 +1,35 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { getRoom, updateRoom, GameRoom, Player } from '../lib/firebase';
-import CanvasDraw from 'react-canvas-draw';
-import { Button } from '../components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { Input } from '../components/ui/input';
-import { ScrollArea } from '../components/ui/scroll-area';
-import { Badge } from '../components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
-import { 
-  ArrowLeft, 
-  Palette, 
-  MessageCircle, 
-  Timer, 
+import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useParams, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import { getRoom, updateRoom, GameRoom, Player } from "../lib/firebase";
+import CanvasDraw from "react-canvas-draw";
+import { Button } from "../components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
+import { Input } from "../components/ui/input";
+import { ScrollArea } from "../components/ui/scroll-area";
+import { Badge } from "../components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
+import {
+  ArrowLeft,
+  Palette,
+  MessageCircle,
+  Timer,
   Trophy,
   Send,
   RotateCcw,
   Eye,
   EyeOff,
   Crown,
-  CheckCircle
-} from 'lucide-react';
-import { toast } from 'sonner';
+  CheckCircle,
+} from "lucide-react";
+import { toast } from "sonner";
 
 interface ChatMessage {
   id: string;
@@ -45,9 +51,36 @@ interface GameState {
 
 // Word bank for the game
 const WORD_BANK = [
-  'cat', 'dog', 'house', 'tree', 'car', 'sun', 'moon', 'star', 'fish', 'bird',
-  'flower', 'pizza', 'cake', 'apple', 'banana', 'chair', 'table', 'phone', 'book', 'hat',
-  'shoes', 'guitar', 'piano', 'rainbow', 'cloud', 'mountain', 'ocean', 'butterfly', 'elephant', 'lion'
+  "cat",
+  "dog",
+  "house",
+  "tree",
+  "car",
+  "sun",
+  "moon",
+  "star",
+  "fish",
+  "bird",
+  "flower",
+  "pizza",
+  "cake",
+  "apple",
+  "banana",
+  "chair",
+  "table",
+  "phone",
+  "book",
+  "hat",
+  "shoes",
+  "guitar",
+  "piano",
+  "rainbow",
+  "cloud",
+  "mountain",
+  "ocean",
+  "butterfly",
+  "elephant",
+  "lion",
 ];
 
 export default function GameRoom() {
@@ -59,15 +92,15 @@ export default function GameRoom() {
     timeLeft: 90,
     messages: [],
     round: 1,
-    guessedPlayers: []
+    guessedPlayers: [],
   });
-  const [currentGuess, setCurrentGuess] = useState('');
-  const [canvasData, setCanvasData] = useState('');
-  const [brushColor, setBrushColor] = useState('#000000');
+  const [currentGuess, setCurrentGuess] = useState("");
+  const [canvasData, setCanvasData] = useState("");
+  const [brushColor, setBrushColor] = useState("#000000");
   const [brushSize, setBrushSize] = useState(3);
   const [isDrawing, setIsDrawing] = useState(false);
   const [showWord, setShowWord] = useState(false);
-  
+
   const canvasRef = useRef<CanvasDraw | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -75,29 +108,29 @@ export default function GameRoom() {
   useEffect(() => {
     const loadRoom = async () => {
       if (!roomCode || !user) return;
-      
+
       try {
         const roomData = await getRoom(roomCode);
         if (!roomData) {
-          toast.error('Room not found');
-          navigate('/dashboard');
+          toast.error("Room not found");
+          navigate("/dashboard");
           return;
         }
-        
+
         if (!roomData.started) {
           navigate(`/lobby/${roomCode}`);
           return;
         }
-        
+
         setRoom(roomData);
-        
+
         // Initialize game if needed
         if (!gameState.currentDrawer) {
           initializeGame(roomData);
         }
       } catch (error) {
-        console.error('Error loading room:', error);
-        toast.error('Failed to load game room');
+        console.error("Error loading room:", error);
+        toast.error("Failed to load game room");
       }
     };
 
@@ -108,18 +141,18 @@ export default function GameRoom() {
   const initializeGame = (roomData: GameRoom) => {
     const firstDrawer = roomData.players[0];
     const randomWord = WORD_BANK[Math.floor(Math.random() * WORD_BANK.length)];
-    
-    setGameState(prev => ({
+
+    setGameState((prev) => ({
       ...prev,
       currentDrawer: firstDrawer.uid,
       currentWord: randomWord,
       timeLeft: 90,
       round: 1,
-      guessedPlayers: []
+      guessedPlayers: [],
     }));
-    
+
     setIsDrawing(firstDrawer.uid === user?.uid);
-    
+
     if (firstDrawer.uid === user?.uid) {
       toast.success(`You're drawing: ${randomWord}`, { duration: 3000 });
     } else {
@@ -130,11 +163,11 @@ export default function GameRoom() {
   // Timer countdown
   useEffect(() => {
     if (gameState.timeLeft <= 0) return;
-    
+
     const timer = setTimeout(() => {
-      setGameState(prev => ({
+      setGameState((prev) => ({
         ...prev,
-        timeLeft: prev.timeLeft - 1
+        timeLeft: prev.timeLeft - 1,
       }));
     }, 1000);
 
@@ -150,69 +183,76 @@ export default function GameRoom() {
 
   // Auto-scroll chat messages
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [gameState.messages]);
 
   const sendMessage = () => {
     if (!currentGuess.trim() || !user || !room) return;
-    
+
     const message: ChatMessage = {
       id: Date.now().toString(),
       playerId: user.uid,
-      playerName: userProfile?.displayName || 'Anonymous',
+      playerName: userProfile?.displayName || "Anonymous",
       message: currentGuess,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
     // Check if guess is correct
-    if (!isDrawing && gameState.currentWord && 
-        currentGuess.toLowerCase().trim() === gameState.currentWord.toLowerCase()) {
+    if (
+      !isDrawing &&
+      gameState.currentWord &&
+      currentGuess.toLowerCase().trim() === gameState.currentWord.toLowerCase()
+    ) {
       message.isCorrectGuess = true;
-      
+
       // Add points to player
-      const updatedPlayers = room.players.map(p => 
-        p.uid === user.uid 
+      const updatedPlayers = room.players.map((p) =>
+        p.uid === user.uid
           ? { ...p, score: p.score + Math.max(10, gameState.timeLeft) }
-          : p
+          : p,
       );
-      
+
       // Update room with new scores
       updateRoom(roomCode!, { players: updatedPlayers });
-      
+
       // Add to guessed players
-      setGameState(prev => ({
+      setGameState((prev) => ({
         ...prev,
         guessedPlayers: [...prev.guessedPlayers, user.uid],
-        messages: [...prev.messages, message]
+        messages: [...prev.messages, message],
       }));
-      
-      toast.success('Correct guess! +' + Math.max(10, gameState.timeLeft) + ' points');
-      
+
+      toast.success(
+        "Correct guess! +" + Math.max(10, gameState.timeLeft) + " points",
+      );
+
       // Check if all players have guessed
-      if (gameState.guessedPlayers.length + 1 >= (room.players.length - 1)) {
+      if (gameState.guessedPlayers.length + 1 >= room.players.length - 1) {
         setTimeout(endRound, 1000);
       }
     } else if (!isDrawing) {
-      setGameState(prev => ({
+      setGameState((prev) => ({
         ...prev,
-        messages: [...prev.messages, message]
+        messages: [...prev.messages, message],
       }));
     }
-    
-    setCurrentGuess('');
+
+    setCurrentGuess("");
   };
 
   const endRound = () => {
     if (!room) return;
-    
+
     // Show the word
     toast.info(`The word was: ${gameState.currentWord}`);
-    
+
     // Move to next drawer or end game
-    const currentDrawerIndex = room.players.findIndex(p => p.uid === gameState.currentDrawer);
+    const currentDrawerIndex = room.players.findIndex(
+      (p) => p.uid === gameState.currentDrawer,
+    );
     const nextDrawerIndex = (currentDrawerIndex + 1) % room.players.length;
     const isLastRound = gameState.round >= (room.maxRounds || 3);
-    
+
     if (isLastRound && nextDrawerIndex === 0) {
       // Game finished
       setTimeout(() => {
@@ -220,36 +260,40 @@ export default function GameRoom() {
       }, 2000);
       return;
     }
-    
+
     // Start next round
     setTimeout(() => {
       const nextDrawer = room.players[nextDrawerIndex];
       const newWord = WORD_BANK[Math.floor(Math.random() * WORD_BANK.length)];
-      const newRound = nextDrawerIndex === 0 ? gameState.round + 1 : gameState.round;
-      
-      setGameState(prev => ({
+      const newRound =
+        nextDrawerIndex === 0 ? gameState.round + 1 : gameState.round;
+
+      setGameState((prev) => ({
         ...prev,
         currentDrawer: nextDrawer.uid,
         currentWord: newWord,
         timeLeft: 90,
         round: newRound,
         guessedPlayers: [],
-        messages: [...prev.messages, {
-          id: Date.now().toString(),
-          playerId: 'system',
-          playerName: 'System',
-          message: `Round ${newRound}: ${nextDrawer.name} is now drawing!`,
-          timestamp: new Date()
-        }]
+        messages: [
+          ...prev.messages,
+          {
+            id: Date.now().toString(),
+            playerId: "system",
+            playerName: "System",
+            message: `Round ${newRound}: ${nextDrawer.name} is now drawing!`,
+            timestamp: new Date(),
+          },
+        ],
       }));
-      
+
       setIsDrawing(nextDrawer.uid === user?.uid);
-      
+
       // Clear canvas
       if (canvasRef.current) {
         canvasRef.current.clear();
       }
-      
+
       if (nextDrawer.uid === user?.uid) {
         toast.success(`Your turn! Draw: ${newWord}`, { duration: 3000 });
       } else {
@@ -264,9 +308,11 @@ export default function GameRoom() {
     }
   };
 
-  const currentDrawer = room?.players.find(p => p.uid === gameState.currentDrawer);
-  const hasGuessed = gameState.guessedPlayers.includes(user?.uid || '');
-  
+  const currentDrawer = room?.players.find(
+    (p) => p.uid === gameState.currentDrawer,
+  );
+  const hasGuessed = gameState.guessedPlayers.includes(user?.uid || "");
+
   if (!room) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-game-purple/20 flex items-center justify-center">
@@ -288,22 +334,29 @@ export default function GameRoom() {
           className="mb-4"
         >
           <div className="flex items-center justify-between">
-            <Button 
-              variant="outline" 
-              onClick={() => navigate('/dashboard')}
+            <Button
+              variant="outline"
+              onClick={() => navigate("/dashboard")}
               className="mb-2"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Leave Game
             </Button>
-            
+
             <div className="flex items-center gap-4">
-              <Badge variant="secondary" className="bg-game-purple/20 text-game-purple">
+              <Badge
+                variant="secondary"
+                className="bg-game-purple/20 text-game-purple"
+              >
                 Round {gameState.round}/{room.maxRounds || 3}
               </Badge>
-              <Badge variant="secondary" className="bg-game-orange/20 text-game-orange">
+              <Badge
+                variant="secondary"
+                className="bg-game-orange/20 text-game-orange"
+              >
                 <Timer className="w-3 h-3 mr-1" />
-                {Math.floor(gameState.timeLeft / 60)}:{(gameState.timeLeft % 60).toString().padStart(2, '0')}
+                {Math.floor(gameState.timeLeft / 60)}:
+                {(gameState.timeLeft % 60).toString().padStart(2, "0")}
               </Badge>
             </div>
           </div>
@@ -322,10 +375,12 @@ export default function GameRoom() {
                   <div className="flex items-center gap-2">
                     <Palette className="w-5 h-5 text-game-purple" />
                     <CardTitle>
-                      {isDrawing ? 'Your Canvas' : `${currentDrawer?.name}'s Canvas`}
+                      {isDrawing
+                        ? "Your Canvas"
+                        : `${currentDrawer?.name}'s Canvas`}
                     </CardTitle>
                   </div>
-                  
+
                   {isDrawing && (
                     <div className="flex items-center gap-2">
                       <Button
@@ -333,8 +388,12 @@ export default function GameRoom() {
                         variant="outline"
                         onClick={() => setShowWord(!showWord)}
                       >
-                        {showWord ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        {showWord ? 'Hide' : 'Show'} Word
+                        {showWord ? (
+                          <EyeOff className="w-4 h-4" />
+                        ) : (
+                          <Eye className="w-4 h-4" />
+                        )}
+                        {showWord ? "Hide" : "Show"} Word
                       </Button>
                       <Button size="sm" variant="outline" onClick={clearCanvas}>
                         <RotateCcw className="w-4 h-4" />
@@ -343,17 +402,21 @@ export default function GameRoom() {
                     </div>
                   )}
                 </div>
-                
+
                 {isDrawing && (
                   <CardDescription className="text-lg font-semibold">
                     {showWord ? (
-                      <span className="text-game-purple">Draw: {gameState.currentWord}</span>
+                      <span className="text-game-purple">
+                        Draw: {gameState.currentWord}
+                      </span>
                     ) : (
-                      <span className="text-muted-foreground">Click "Show Word" to see what to draw</span>
+                      <span className="text-muted-foreground">
+                        Click "Show Word" to see what to draw
+                      </span>
                     )}
                   </CardDescription>
                 )}
-                
+
                 {!isDrawing && hasGuessed && (
                   <CardDescription className="text-game-success font-semibold flex items-center gap-2">
                     <CheckCircle className="w-4 h-4" />
@@ -372,14 +435,14 @@ export default function GameRoom() {
                     disabled={!isDrawing}
                     hideGrid={true}
                     className="border rounded-lg bg-white shadow-inner"
-                    style={{ width: '100%', height: 'auto' }}
+                    style={{ width: "100%", height: "auto" }}
                   />
-                  
+
                   {!isDrawing && (
                     <div className="absolute inset-0 bg-transparent" />
                   )}
                 </div>
-                
+
                 {isDrawing && (
                   <div className="flex items-center gap-4 mt-4">
                     <div className="flex items-center gap-2">
@@ -430,15 +493,18 @@ export default function GameRoom() {
                     <div
                       key={player.uid}
                       className={`flex items-center justify-between p-2 rounded-lg ${
-                        player.uid === gameState.currentDrawer 
-                          ? 'bg-game-purple/10 border border-game-purple/30' 
-                          : 'bg-muted/50'
+                        player.uid === gameState.currentDrawer
+                          ? "bg-game-purple/10 border border-game-purple/30"
+                          : "bg-muted/50"
                       }`}
                     >
                       <div className="flex items-center gap-2">
                         <div className="relative">
                           <Avatar className="w-8 h-8">
-                            <AvatarImage src={player.photoURL || undefined} alt={player.name} />
+                            <AvatarImage
+                              src={player.photoURL || undefined}
+                              alt={player.name}
+                            />
                             <AvatarFallback className="text-xs">
                               {player.name.charAt(0).toUpperCase()}
                             </AvatarFallback>
@@ -486,10 +552,10 @@ export default function GameRoom() {
                           animate={{ opacity: 1, y: 0 }}
                           className={`p-2 rounded-lg text-sm ${
                             msg.isCorrectGuess
-                              ? 'bg-game-success/20 border border-game-success/30'
-                              : msg.playerId === 'system'
-                              ? 'bg-game-purple/10 border border-game-purple/30'
-                              : 'bg-muted/50'
+                              ? "bg-game-success/20 border border-game-success/30"
+                              : msg.playerId === "system"
+                                ? "bg-game-purple/10 border border-game-purple/30"
+                                : "bg-muted/50"
                           }`}
                         >
                           <div className="flex items-center gap-2 mb-1">
@@ -500,7 +566,13 @@ export default function GameRoom() {
                               <CheckCircle className="w-3 h-3 text-game-success" />
                             )}
                           </div>
-                          <p className={msg.isCorrectGuess ? 'font-semibold text-game-success' : ''}>
+                          <p
+                            className={
+                              msg.isCorrectGuess
+                                ? "font-semibold text-game-success"
+                                : ""
+                            }
+                          >
                             {msg.message}
                           </p>
                         </motion.div>
@@ -509,14 +581,14 @@ export default function GameRoom() {
                     <div ref={messagesEndRef} />
                   </div>
                 </ScrollArea>
-                
+
                 {!isDrawing && !hasGuessed && (
                   <div className="flex gap-2">
                     <Input
                       placeholder="Type your guess..."
                       value={currentGuess}
                       onChange={(e) => setCurrentGuess(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                      onKeyPress={(e) => e.key === "Enter" && sendMessage()}
                       className="flex-1"
                     />
                     <Button size="sm" onClick={sendMessage}>
@@ -524,13 +596,13 @@ export default function GameRoom() {
                     </Button>
                   </div>
                 )}
-                
+
                 {isDrawing && (
                   <div className="text-center text-sm text-muted-foreground">
                     You're drawing! Others are guessing...
                   </div>
                 )}
-                
+
                 {hasGuessed && (
                   <div className="text-center text-sm text-game-success font-medium">
                     ✓ You guessed correctly!
