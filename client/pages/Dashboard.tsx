@@ -32,7 +32,7 @@ import {
   GamepadIcon,
   Sparkles,
 } from "lucide-react";
-import { ThemeToggle } from '../components/ui/theme-toggle';
+import { ThemeToggle } from "../components/ui/theme-toggle";
 
 export default function Dashboard() {
   const { user, userProfile } = useAuth();
@@ -41,7 +41,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(false);
   const [joinDialogOpen, setJoinDialogOpen] = useState(false);
   const [errorDialogOpen, setErrorDialogOpen] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleCreateRoom = async () => {
     if (!user) return;
@@ -71,7 +71,9 @@ export default function Dashboard() {
           setJoinDialogOpen(false);
         } else {
           // Show error dialog
-          setErrorMessage("Room not found. Please check the room code and try again.");
+          setErrorMessage(
+            "Room not found. Please check the room code and try again.",
+          );
           setErrorDialogOpen(true);
           setJoinDialogOpen(false);
         }
@@ -195,10 +197,7 @@ export default function Dashboard() {
           </div>
 
           {/* Theme Toggle */}
-          <motion.div
-            variants={itemVariants}
-            className="hidden md:block"
-          >
+          <motion.div variants={itemVariants} className="hidden md:block">
             <ThemeToggle />
           </motion.div>
 
@@ -209,7 +208,7 @@ export default function Dashboard() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               className="flex items-center space-x-3 bg-card/50 backdrop-blur-sm border rounded-full px-4 py-2 hover:bg-card/70 transition-colors cursor-pointer"
-              onClick={() => navigate('/profile')}
+              onClick={() => navigate("/profile")}
             >
               <Avatar className="w-8 h-8">
                 <AvatarImage
@@ -446,8 +445,18 @@ export default function Dashboard() {
           <DialogContent className="sm:max-w-md bg-card/95 backdrop-blur-sm">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2 text-destructive">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
+                  />
                 </svg>
                 Room Not Found
               </DialogTitle>
@@ -460,7 +469,7 @@ export default function Dashboard() {
                 onClick={() => {
                   setErrorDialogOpen(false);
                   setJoinDialogOpen(true); // Reopen join dialog
-                  setRoomCode(''); // Clear the invalid code
+                  setRoomCode(""); // Clear the invalid code
                 }}
                 className="bg-game-purple hover:bg-game-purple-dark"
               >

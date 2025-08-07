@@ -59,11 +59,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
     };
 
-    window.addEventListener('mockAuthStateChange', handleProfileUpdate);
+    window.addEventListener("mockAuthStateChange", handleProfileUpdate);
 
     return () => {
       unsubscribe();
-      window.removeEventListener('mockAuthStateChange', handleProfileUpdate);
+      window.removeEventListener("mockAuthStateChange", handleProfileUpdate);
     };
   }, []);
 

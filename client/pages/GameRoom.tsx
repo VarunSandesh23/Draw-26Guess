@@ -439,7 +439,7 @@ export default function GameRoom() {
                       style={{
                         width: "100%",
                         height: "100%",
-                        display: "block"
+                        display: "block",
                       }}
                     />
                   </div>

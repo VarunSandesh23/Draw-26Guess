@@ -264,20 +264,26 @@ export const getUserProfile = async (
   }
 };
 
-export const updateUserProfile = async (uid: string, updates: Partial<UserProfile>): Promise<boolean> => {
-  console.log('updateUserProfile called with:', { uid, updates });
+export const updateUserProfile = async (
+  uid: string,
+  updates: Partial<UserProfile>,
+): Promise<boolean> => {
+  console.log("updateUserProfile called with:", { uid, updates });
 
   // For mock users, update localStorage
   if (uid.startsWith("mock_")) {
     try {
       const stored = localStorage.getItem("draw_and_guess_demo_user");
-      console.log('Current stored user:', stored);
+      console.log("Current stored user:", stored);
 
       if (stored) {
         const userData = JSON.parse(stored);
         const updatedData = { ...userData, ...updates };
-        console.log('Updating with:', updatedData);
-        localStorage.setItem("draw_and_guess_demo_user", JSON.stringify(updatedData));
+        console.log("Updating with:", updatedData);
+        localStorage.setItem(
+          "draw_and_guess_demo_user",
+          JSON.stringify(updatedData),
+        );
 
         // Also update in mock users storage if it exists
         const mockUsers = localStorage.getItem("draw_and_guess_mock_users");
@@ -285,19 +291,24 @@ export const updateUserProfile = async (uid: string, updates: Partial<UserProfil
           const users = JSON.parse(mockUsers);
           if (users[uid]) {
             users[uid].profile = { ...users[uid].profile, ...updates };
-            localStorage.setItem("draw_and_guess_mock_users", JSON.stringify(users));
+            localStorage.setItem(
+              "draw_and_guess_mock_users",
+              JSON.stringify(users),
+            );
           }
         }
 
         // Trigger auth state change to update UI
-        window.dispatchEvent(new CustomEvent("mockAuthStateChange", {
-          detail: updatedData
-        }));
+        window.dispatchEvent(
+          new CustomEvent("mockAuthStateChange", {
+            detail: updatedData,
+          }),
+        );
 
-        console.log('Mock user profile updated successfully');
+        console.log("Mock user profile updated successfully");
         return true;
       }
-      console.log('No stored user found');
+      console.log("No stored user found");
       return false;
     } catch (error) {
       console.error("Error updating mock user profile:", error);
