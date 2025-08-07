@@ -9,6 +9,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import Profile from "./pages/Profile";
 import Lobby from "./pages/Lobby";
 import GameRoom from "./pages/GameRoom";
 import Scoreboard from "./pages/Scoreboard";
