@@ -69,8 +69,10 @@ export default function Dashboard() {
           navigate(`/lobby/${code}`);
           setJoinDialogOpen(false);
         } else {
-          // Show error in the dialog
-          alert("Room not found. Please check the room code and try again.");
+          // Show error dialog
+          setErrorMessage("Room not found. Please check the room code and try again.");
+          setErrorDialogOpen(true);
+          setJoinDialogOpen(false);
         }
       } catch (error) {
         console.error("Error checking room:", error);
