@@ -100,47 +100,61 @@ export default function Profile() {
   const winRate = gamesPlayed > 0 ? Math.round((gamesWon / gamesPlayed) * 100) : 0;
   const averageScore = gamesPlayed > 0 ? Math.round(totalScore / gamesPlayed) : 0;
 
-  // Define achievements
+  // Define achievements with enhanced descriptions matching the design
   const achievements = [
     {
-      id: 'first_win',
+      id: 'first_victory',
       name: 'First Victory',
-      description: 'Win your first game',
+      description: 'Congratulations on winning your very first game! Every master artist started with their first masterpiece.',
       icon: Trophy,
       unlocked: gamesWon >= 1,
-      color: 'text-game-teal'
+      color: 'text-game-teal',
+      requirement: 'Win your first game'
     },
     {
       id: 'artist',
       name: 'Artist',
-      description: 'Play 10 games',
-      icon: GamepadIcon,
+      description: 'You\'ve played 10 games and are becoming a true drawing artist! Your creativity knows no bounds.',
+      icon: Palette,
       unlocked: gamesPlayed >= 10,
-      color: 'text-game-purple'
+      color: 'text-game-purple',
+      requirement: 'Play 10 games'
     },
     {
       id: 'champion',
       name: 'Champion',
-      description: 'Win 5 games',
+      description: 'With 5 victories under your belt, you\'re proving to be a formidable competitor!',
       icon: Crown,
       unlocked: gamesWon >= 5,
-      color: 'text-game-orange'
+      color: 'text-game-orange',
+      requirement: 'Win 5 games'
     },
     {
       id: 'high_scorer',
       name: 'High Scorer',
-      description: 'Reach 1000 total points',
+      description: 'You\'ve accumulated an impressive 1000 total points! Your guessing and drawing skills are exceptional.',
       icon: Star,
       unlocked: totalScore >= 1000,
-      color: 'text-game-success'
+      color: 'text-game-success',
+      requirement: 'Reach 1000 total points'
     },
     {
-      id: 'streaker',
+      id: 'win_streak',
       name: 'Win Streak',
-      description: 'Maintain 80% win rate',
+      description: 'Maintaining an 80% win rate shows consistent excellence. You\'re in the top tier of players!',
       icon: Zap,
       unlocked: winRate >= 80 && gamesPlayed >= 5,
-      color: 'text-game-warning'
+      color: 'text-game-warning',
+      requirement: 'Maintain 80% win rate with 5+ games'
+    },
+    {
+      id: 'speed_demon',
+      name: 'Speed Demon',
+      description: 'Quick thinking and faster drawing! You excel at rapid-fire rounds.',
+      icon: Clock,
+      unlocked: false, // This could be based on average time to guess
+      color: 'text-game-teal',
+      requirement: 'Guess 5 words in under 10 seconds each'
     }
   ];
 
