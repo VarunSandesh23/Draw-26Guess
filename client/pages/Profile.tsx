@@ -38,6 +38,13 @@ export default function Profile() {
   const [editedName, setEditedName] = useState('');
   const [loading, setLoading] = useState(false);
 
+  // Update editedName when userProfile loads
+  useEffect(() => {
+    if (userProfile?.displayName) {
+      setEditedName(userProfile.displayName);
+    }
+  }, [userProfile]);
+
   const handleSaveProfile = async () => {
     if (!editedName.trim()) {
       toast.error('Display name cannot be empty');
