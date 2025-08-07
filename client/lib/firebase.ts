@@ -234,19 +234,11 @@ export const generateRoomCode = (): string => {
 
 export const createRoom = async (creatorUid: string): Promise<string> => {
   const roomCode = generateRoomCode();
-  const roomRef = doc(db, 'rooms', roomCode);
-  
-  const gameRoom: GameRoom = {
-    roomCode,
-    players: [],
-    round: 1,
-    maxRounds: 3,
-    started: false,
-    createdBy: creatorUid,
-    createdAt: new Date()
-  };
-  
-  await setDoc(roomRef, gameRoom);
+
+  // For mock system, just return the room code
+  // In a real implementation, this would create the room in Firestore
+  console.log(`Mock room created: ${roomCode} by user ${creatorUid}`);
+
   return roomCode;
 };
 
