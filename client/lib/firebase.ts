@@ -265,13 +265,18 @@ export const getUserProfile = async (
 };
 
 export const updateUserProfile = async (uid: string, updates: Partial<UserProfile>): Promise<boolean> => {
+  console.log('updateUserProfile called with:', { uid, updates });
+
   // For mock users, update localStorage
   if (uid.startsWith("mock_")) {
     try {
       const stored = localStorage.getItem("draw_and_guess_demo_user");
+      console.log('Current stored user:', stored);
+
       if (stored) {
         const userData = JSON.parse(stored);
         const updatedData = { ...userData, ...updates };
+        console.log('Updating with:', updatedData);
         localStorage.setItem("draw_and_guess_demo_user", JSON.stringify(updatedData));
 
         // Also update in mock users storage if it exists
