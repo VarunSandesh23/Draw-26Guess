@@ -39,6 +39,8 @@ export default function Dashboard() {
   const [roomCode, setRoomCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [joinDialogOpen, setJoinDialogOpen] = useState(false);
+  const [errorDialogOpen, setErrorDialogOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleCreateRoom = async () => {
     if (!user) return;
