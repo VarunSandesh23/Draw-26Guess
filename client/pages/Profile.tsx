@@ -42,6 +42,9 @@ export default function Profile() {
   useEffect(() => {
     if (userProfile?.displayName) {
       setEditedName(userProfile.displayName);
+    } else if (userProfile && !userProfile.displayName) {
+      // If profile exists but has no displayName, set a default
+      setEditedName('Anonymous Player');
     }
   }, [userProfile]);
 
