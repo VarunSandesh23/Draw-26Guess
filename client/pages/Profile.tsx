@@ -368,42 +368,84 @@ export default function Profile() {
                 <CardDescription>Unlock achievements by playing and winning games</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Achievement Design Reference */}
+                <div className="mb-6 p-4 bg-muted/20 rounded-lg border border-dashed border-muted">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-2 h-2 bg-game-purple rounded-full"></div>
+                    <span className="text-sm text-muted-foreground">Achievement Design Reference</span>
+                  </div>
+                  <img
+                    src="https://cdn.builder.io/api/v1/image/assets%2Fd926398ea245443c9b9cde312e68afa5%2Fdce4c8e486e7490eba27a9be1ec43b99?format=webp&width=800"
+                    alt="Achievement Cards Design"
+                    className="w-full max-w-md mx-auto rounded-lg shadow-sm"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {achievements.map((achievement) => {
                     const IconComponent = achievement.icon;
                     return (
                       <motion.div
                         key={achievement.id}
-                        className={`p-4 rounded-lg border transition-all ${
+                        className={`relative p-6 rounded-2xl border-2 transition-all duration-300 ${
                           achievement.unlocked
-                            ? 'bg-gradient-to-r from-background to-card border-border shadow-md'
-                            : 'bg-muted/30 border-muted opacity-50'
+                            ? 'bg-white dark:bg-card border-game-purple/30 shadow-lg hover:shadow-xl'
+                            : 'bg-gray-50 dark:bg-muted/20 border-gray-200 dark:border-muted opacity-60'
                         }`}
-                        whileHover={achievement.unlocked ? { scale: 1.02 } : {}}
+                        whileHover={achievement.unlocked ? { scale: 1.03, y: -5 } : {}}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3 }}
                       >
-                        <div className="flex items-start gap-3">
-                          <div className={`p-2 rounded-lg ${
-                            achievement.unlocked 
-                              ? 'bg-gradient-to-br from-game-purple/20 to-game-teal/20' 
-                              : 'bg-muted'
+                        {achievement.unlocked && (
+                          <div className="absolute -top-2 -right-2">
+                            <div className="w-6 h-6 bg-game-success rounded-full flex items-center justify-center border-2 border-white">
+                              <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                              </svg>
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="text-center">
+                          <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center ${
+                            achievement.unlocked
+                              ? 'bg-gradient-to-br from-game-purple/20 to-game-teal/20 border-2 border-game-purple/30'
+                              : 'bg-gray-100 dark:bg-muted border-2 border-gray-200 dark:border-muted'
                           }`}>
-                            <IconComponent className={`w-5 h-5 ${
-                              achievement.unlocked ? achievement.color : 'text-muted-foreground'
+                            <IconComponent className={`w-8 h-8 ${
+                              achievement.unlocked ? achievement.color : 'text-gray-400 dark:text-muted-foreground'
                             }`} />
                           </div>
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2">
-                              <h4 className="font-semibold">{achievement.name}</h4>
-                              {achievement.unlocked && (
-                                <Badge className="bg-game-success text-xs">
-                                  Unlocked
-                                </Badge>
-                              )}
+
+                          <h4 className={`font-bold text-lg mb-2 ${
+                            achievement.unlocked ? 'text-foreground' : 'text-gray-400 dark:text-muted-foreground'
+                          }`}>
+                            {achievement.name}
+                          </h4>
+
+                          <p className={`text-sm leading-relaxed ${
+                            achievement.unlocked ? 'text-muted-foreground' : 'text-gray-400 dark:text-muted-foreground'
+                          }`}>
+                            {achievement.description}
+                          </p>
+
+                          {achievement.unlocked && (
+                            <motion.div
+                              className="mt-4 px-3 py-1 bg-game-success/10 text-game-success text-xs font-medium rounded-full inline-block"
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              transition={{ delay: 0.2 }}
+                            >
+                              Unlocked!
+                            </motion.div>
+                          )}
+
+                          {!achievement.unlocked && (
+                            <div className="mt-4 px-3 py-1 bg-gray-100 dark:bg-muted text-gray-500 dark:text-muted-foreground text-xs font-medium rounded-full inline-block">
+                              Locked
                             </div>
-                            <p className="text-sm text-muted-foreground mt-1">
-                              {achievement.description}
-                            </p>
-                          </div>
+                          )}
                         </div>
                       </motion.div>
                     );
