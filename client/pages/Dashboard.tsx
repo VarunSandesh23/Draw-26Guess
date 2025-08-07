@@ -194,6 +194,14 @@ export default function Dashboard() {
             </div>
           </div>
 
+          {/* Theme Toggle */}
+          <motion.div
+            variants={itemVariants}
+            className="hidden md:block"
+          >
+            <ThemeToggle />
+          </motion.div>
+
           <motion.div
             className="flex items-center space-x-4"
             variants={itemVariants}
