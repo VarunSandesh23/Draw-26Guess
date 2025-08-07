@@ -49,7 +49,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setLoading(false);
     });
 
-    return unsubscribe;
+    // Also listen for profile updates specifically for mock users
+    const handleProfileUpdate = async (event: any) => {
+      const updatedUser = event.detail;
+      if (updatedUser) {
+        setUser(updatedUser);
+        const profile = await getUserProfile(updatedUser.uid);
+        setUserProfile(profile);
+      }
+    };
+
+    window.addEventListener('mockAuthStateChange', handleProfileUpdate);
+
+    return () => {
+      unsubscribe();
+      window.removeEventListener('mockAuthStateChange', handleProfileUpdate);
+    };
   }, []);
 
   const value = {
