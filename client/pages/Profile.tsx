@@ -381,6 +381,22 @@ export default function Profile() {
                   </Badge>
                 </CardTitle>
                 <CardDescription>Unlock achievements by playing and winning games</CardDescription>
+
+                {/* Progress Bar */}
+                <div className="mt-4">
+                  <div className="flex items-center justify-between text-sm mb-2">
+                    <span className="text-muted-foreground">Overall Progress</span>
+                    <span className="font-medium">{Math.round((unlockedAchievements.length / achievements.length) * 100)}%</span>
+                  </div>
+                  <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
+                    <motion.div
+                      className="h-full bg-gradient-to-r from-game-purple to-game-teal rounded-full"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${(unlockedAchievements.length / achievements.length) * 100}%` }}
+                      transition={{ duration: 1, ease: "easeOut" }}
+                    />
+                  </div>
+                </div>
               </CardHeader>
               <CardContent>
                 {/* Achievement Design Reference & Progress */}
