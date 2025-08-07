@@ -264,6 +264,50 @@ export const getUserProfile = async (
   }
 };
 
+export const updateUserProfile = async (uid: string, updates: Partial<UserProfile>): Promise<boolean> => {
+  // For mock users, update localStorage
+  if (uid.startsWith("mock_")) {
+    try {
+      const stored = localStorage.getItem("draw_and_guess_demo_user");
+      if (stored) {
+        const userData = JSON.parse(stored);
+        const updatedData = { ...userData, ...updates };
+        localStorage.setItem("draw_and_guess_demo_user", JSON.stringify(updatedData));
+
+        // Also update in mock users storage if it exists
+        const mockUsers = localStorage.getItem("draw_and_guess_mock_users");
+        if (mockUsers) {
+          const users = JSON.parse(mockUsers);
+          if (users[uid]) {
+            users[uid].profile = { ...users[uid].profile, ...updates };
+            localStorage.setItem("draw_and_guess_mock_users", JSON.stringify(users));
+          }
+        }
+
+        // Trigger auth state change to update UI
+        window.dispatchEvent(new CustomEvent("mockAuthStateChange", {
+          detail: updatedData
+        }));
+
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error("Error updating mock user profile:", error);
+      return false;
+    }
+  }
+
+  try {
+    const userRef = doc(db, "users", uid);
+    await setDoc(userRef, updates, { merge: true });
+    return true;
+  } catch (error) {
+    console.warn("Firestore not available, using mock update");
+    return false;
+  }
+};
+
 // Room functions
 export const generateRoomCode = (): string => {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
