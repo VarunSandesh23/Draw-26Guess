@@ -425,21 +425,27 @@ export default function GameRoom() {
                 )}
               </CardHeader>
               <CardContent>
-                <div className="relative">
-                  <CanvasDraw
-                    ref={canvasRef}
-                    canvasWidth={800}
-                    canvasHeight={500}
-                    brushColor={brushColor}
-                    brushRadius={brushSize}
-                    disabled={!isDrawing}
-                    hideGrid={true}
-                    className="border rounded-lg bg-white shadow-inner"
-                    style={{ width: "100%", height: "auto" }}
-                  />
+                <div className="relative w-full">
+                  <div className="aspect-[4/3] w-full border rounded-lg bg-white shadow-inner overflow-hidden">
+                    <CanvasDraw
+                      ref={canvasRef}
+                      canvasWidth={800}
+                      canvasHeight={600}
+                      brushColor={brushColor}
+                      brushRadius={brushSize}
+                      disabled={!isDrawing}
+                      hideGrid={true}
+                      className="w-full h-full"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        display: "block"
+                      }}
+                    />
+                  </div>
 
                   {!isDrawing && (
-                    <div className="absolute inset-0 bg-transparent" />
+                    <div className="absolute inset-0 bg-transparent pointer-events-none" />
                   )}
                 </div>
 
