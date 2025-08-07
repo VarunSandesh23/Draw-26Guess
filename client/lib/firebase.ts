@@ -223,22 +223,143 @@ export const generateRoomCode = (): string => {
   return result;
 };
 
+// Mock room storage
+const ROOMS_KEY = 'draw_and_guess_rooms';
+
+const getRooms = (): Record<string, GameRoom> => {
+  const stored = localStorage.getItem(ROOMS_KEY);
+  return stored ? JSON.parse(stored) : {};
+};
+
+const saveRooms = (rooms: Record<string, GameRoom>) => {
+  localStorage.setItem(ROOMS_KEY, JSON.stringify(rooms));
+};
+
 export const createRoom = async (creatorUid: string): Promise<string> => {
   const roomCode = generateRoomCode();
-  const roomRef = doc(db, 'rooms', roomCode);
 
-  const gameRoom: GameRoom = {
-    roomCode,
-    players: [],
-    round: 1,
-    maxRounds: 3,
-    started: false,
-    createdBy: creatorUid,
-    createdAt: new Date()
-  };
+  try {
+    // Try Firebase first
+    const roomRef = doc(db, 'rooms', roomCode);
 
-  await setDoc(roomRef, gameRoom);
-  return roomCode;
+    const gameRoom: GameRoom = {
+      roomCode,
+      players: [],
+      round: 1,
+      maxRounds: 3,
+      started: false,
+      createdBy: creatorUid,
+      createdAt: new Date()
+    };
+
+    await setDoc(roomRef, gameRoom);
+    return roomCode;
+  } catch (error) {
+    console.warn('Firestore not available, using mock rooms');
+
+    // Fallback to mock room system
+    const rooms = getRooms();
+    const gameRoom: GameRoom = {
+      roomCode,
+      players: [],
+      round: 1,
+      maxRounds: 3,
+      started: false,
+      createdBy: creatorUid,
+      createdAt: new Date()
+    };
+
+    rooms[roomCode] = gameRoom;
+    saveRooms(rooms);
+
+    return roomCode;
+  }
+};
+
+export const getRoom = async (roomCode: string): Promise<GameRoom | null> => {
+  try {
+    // Try Firebase first
+    const roomRef = doc(db, 'rooms', roomCode);
+    const roomDoc = await getDoc(roomRef);
+    return roomDoc.exists() ? roomDoc.data() as GameRoom : null;
+  } catch (error) {
+    console.warn('Firestore not available, using mock rooms');
+
+    // Fallback to mock system
+    const rooms = getRooms();
+    return rooms[roomCode] || null;
+  }
+};
+
+export const joinRoom = async (roomCode: string, player: Player): Promise<boolean> => {
+  try {
+    // Try Firebase first
+    const roomRef = doc(db, 'rooms', roomCode);
+    const roomDoc = await getDoc(roomRef);
+
+    if (!roomDoc.exists()) return false;
+
+    const room = roomDoc.data() as GameRoom;
+
+    // Check if player already in room
+    const existingPlayerIndex = room.players.findIndex(p => p.uid === player.uid);
+    if (existingPlayerIndex >= 0) {
+      room.players[existingPlayerIndex] = player;
+    } else {
+      room.players.push(player);
+    }
+
+    await setDoc(roomRef, room);
+    return true;
+  } catch (error) {
+    console.warn('Firestore not available, using mock rooms');
+
+    // Fallback to mock system
+    const rooms = getRooms();
+    const room = rooms[roomCode];
+
+    if (!room) return false;
+
+    // Check if player already in room
+    const existingPlayerIndex = room.players.findIndex(p => p.uid === player.uid);
+    if (existingPlayerIndex >= 0) {
+      room.players[existingPlayerIndex] = player;
+    } else {
+      room.players.push(player);
+    }
+
+    rooms[roomCode] = room;
+    saveRooms(rooms);
+
+    return true;
+  }
+};
+
+export const updateRoom = async (roomCode: string, updates: Partial<GameRoom>): Promise<boolean> => {
+  try {
+    // Try Firebase first
+    const roomRef = doc(db, 'rooms', roomCode);
+    const roomDoc = await getDoc(roomRef);
+
+    if (!roomDoc.exists()) return false;
+
+    const room = { ...roomDoc.data() as GameRoom, ...updates };
+    await setDoc(roomRef, room);
+    return true;
+  } catch (error) {
+    console.warn('Firestore not available, using mock rooms');
+
+    // Fallback to mock system
+    const rooms = getRooms();
+    const room = rooms[roomCode];
+
+    if (!room) return false;
+
+    rooms[roomCode] = { ...room, ...updates };
+    saveRooms(rooms);
+
+    return true;
+  }
 };
 
 // Auth state observer
