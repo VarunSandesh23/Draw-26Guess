@@ -120,6 +120,9 @@ export const signInWithGoogle = async () => {
     saveMockUsers(users);
     saveCurrentMockUser(mockUser);
 
+    // Trigger auth state change
+    window.dispatchEvent(new CustomEvent('mockAuthStateChange', { detail: mockUser }));
+
     return mockUser as any;
   } catch (error) {
     console.error('Google sign in error:', error);
@@ -144,6 +147,10 @@ export const signInWithEmail = async (email: string, password: string) => {
     };
 
     saveCurrentMockUser(mockUser);
+
+    // Trigger auth state change
+    window.dispatchEvent(new CustomEvent('mockAuthStateChange', { detail: mockUser }));
+
     return mockUser as any;
   } catch (error) {
     console.error('Email sign in error:', error);
@@ -186,6 +193,9 @@ export const signUpWithEmail = async (email: string, password: string, displayNa
 
     saveMockUsers(users);
     saveCurrentMockUser(mockUser);
+
+    // Trigger auth state change
+    window.dispatchEvent(new CustomEvent('mockAuthStateChange', { detail: mockUser }));
 
     return mockUser as any;
   } catch (error) {
