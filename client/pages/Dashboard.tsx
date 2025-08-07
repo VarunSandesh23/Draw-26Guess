@@ -193,9 +193,10 @@ export default function Dashboard() {
             className="flex items-center space-x-4"
             variants={itemVariants}
           >
-            <motion.div
+            <motion.button
               whileHover={{ scale: 1.05 }}
-              className="flex items-center space-x-3 bg-card/50 backdrop-blur-sm border rounded-full px-4 py-2"
+              className="flex items-center space-x-3 bg-card/50 backdrop-blur-sm border rounded-full px-4 py-2 hover:bg-card/70 transition-colors cursor-pointer"
+              onClick={() => navigate('/profile')}
             >
               <Avatar className="w-8 h-8">
                 <AvatarImage
@@ -212,7 +213,7 @@ export default function Dashboard() {
                   Score: {userProfile?.totalScore || 0}
                 </p>
               </div>
-            </motion.div>
+            </motion.button>
 
             <Button
               variant="outline"
